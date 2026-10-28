@@ -3,7 +3,7 @@ works on Streamlit Community Cloud)."""
 from __future__ import annotations
 
 import io
-from datetime import datetime
+from datetime import datetime, timezone
 
 import matplotlib
 
@@ -173,7 +173,7 @@ def _img(buf, height_mm):
 def build_report(a: Analysis, view_type: str = "line", trend: int = 1) -> bytes:
     out = io.BytesIO()
     date_range = f"{a.dates[0]:%Y-%m-%d} to {a.dates[-1]:%Y-%m-%d}"
-    generated = datetime.now()
+    generated = datetime.now(timezone.utc)
 
     def cover(c, _doc):
         c.saveState()
@@ -192,7 +192,7 @@ def build_report(a: Analysis, view_type: str = "line", trend: int = 1) -> bytes:
         c.setFillColor(colors.HexColor("#d1d5db")); c.setFont("Helvetica", 11)
         c.drawString(M, PAGE_H - 71 * mm, f"Daily extraction, descriptive statistics and anomaly review  |  {date_range}")
         c.setFillColor(colors.HexColor("#9ca3af")); c.setFont("Helvetica", 8.5)
-        c.drawString(M, PAGE_H - 80 * mm, f"Generated {generated:%d/%m/%Y %H:%M}  |  Data fetched {a.fetched_at:%d/%m/%Y %H:%M}")
+        c.drawString(M, PAGE_H - 80 * mm, f"Generated {generated:%d/%m/%Y %H:%M} UTC  |  Data fetched {a.fetched_at:%d/%m/%Y %H:%M} UTC")
         c.restoreState()
 
     def later(c, doc):

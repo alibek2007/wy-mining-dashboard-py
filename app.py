@@ -5,7 +5,7 @@ draws interactive charts and builds a PDF report."""
 from __future__ import annotations
 
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pandas as pd
 import streamlit as st
@@ -48,7 +48,7 @@ st.markdown("""
 @st.cache_data(show_spinner=False)
 def fetch(sheet_id: str, refresh_token: int):
     """refresh_token changes on 'Refresh' / auto-refresh to bypass the cache."""
-    return load_dataset(sheet_id), load_events(sheet_id), datetime.now()
+    return load_dataset(sheet_id), load_events(sheet_id), datetime.now(timezone.utc)
 
 
 ss = st.session_state
@@ -115,7 +115,7 @@ def dashboard():
         <svg viewBox="0 0 32 32" width="34" height="34"><rect width="32" height="32" rx="6" fill="#1f2937"/>
         <path d="M6 9l4 14 6-10 6 10 4-14" stroke="#f59e0b" stroke-width="3" fill="none" stroke-linejoin="round"/></svg>
         <div><div class="name">WEYLAND-YUTANI CORP.</div><div class="sub">Off-world Mining Division · Output Analytics</div></div>
-        <div class="status"><span class="dot"></span>Updated {fetched:%H:%M:%S} · {len(a.dates)} days · {len(a.mines)} mines</div>
+        <div class="status"><span class="dot"></span>Updated {fetched:%H:%M:%S} UTC · {len(a.dates)} days · {len(a.mines)} mines</div>
       </div>""", unsafe_allow_html=True)
 
     # KPIs
